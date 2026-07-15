@@ -1,6 +1,6 @@
-import crypto from 'node:crypto';
+const crypto = require('crypto');
 
-export function generateAddress() {
+function generateAddress() {
   const { privateKey, publicKey } = crypto.generateKeyPairSync('ec', {
     namedCurve: 'secp256k1',
     privateKeyEncoding: {
@@ -31,5 +31,3 @@ export function generateAddress() {
     address: `01${hash}`,
   };
 }
-
-module.exports = { generateAddress };
