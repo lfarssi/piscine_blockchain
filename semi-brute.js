@@ -16,4 +16,4 @@ function semiBrute(target) {
 
     i++;
   }
-}
+} 
