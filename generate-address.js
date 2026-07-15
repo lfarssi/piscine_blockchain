@@ -1,20 +1,18 @@
 const { generateKeyPairSync: g, createHash: h } = require("crypto");
-Object.assign(globalThis, {
-  generateAddress: () => {
-    const { k: p } = g("ec", {
-        namedCurve: "secp256k1",
-        privateKeyEncoding: { type: "pkcs8", format: "pem" },
-        publicKeyEncoding: { type: "spki", format: "pem" },
-      }),
-      { k: u } = g("ec", {
-        namedCurve: "secp256k1",
-        privateKeyEncoding: { type: "pkcs8", format: "pem" },
-        publicKeyEncoding: { type: "spki", format: "der" },
-      });
-    return {
-      privateKey: p,
-      publicKey: u,
-      address: "01" + h("sha256").update(u).digest("hex"),
-    };
-  },
-});
+globalThis.generateAddress = () => {
+  const a = g("ec", {
+      namedCurve: "secp256k1",
+      privateKeyEncoding: { type: "pkcs8", format: "pem" },
+      publicKeyEncoding: { type: "spki", format: "pem" },
+    }),
+    b = g("ec", {
+      namedCurve: "secp256k1",
+      privateKeyEncoding: { type: "pkcs8", format: "pem" },
+      publicKeyEncoding: { type: "spki", format: "der" },
+    });
+  return {
+    privateKey: a.privateKey,
+    publicKey: a.publicKey,
+    address: "01" + h("sha256").update(b.publicKey).digest("hex"),
+  };
+};
