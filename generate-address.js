@@ -1,7 +1,6 @@
-// generate-address.js
-const crypto = require('node:crypto');
+import crypto from 'node:crypto';
 
-function generateAddress() {
+export function generateAddress() {
   const { privateKey, publicKey } = crypto.generateKeyPairSync('ec', {
     namedCurve: 'secp256k1',
     privateKeyEncoding: {
@@ -14,10 +13,12 @@ function generateAddress() {
     },
   });
 
-  // Re-import PEM so Node can export the exact SPKI DER bytes to hash.
   const publicKeyDer = crypto
     .createPublicKey(publicKey)
-    .export({ type: 'spki', format: 'der' });
+    .export({
+      type: 'spki',
+      format: 'der',
+    });
 
   const hash = crypto
     .createHash('sha256')
@@ -30,5 +31,3 @@ function generateAddress() {
     address: `01${hash}`,
   };
 }
-
-module.exports = { generateAddress };
