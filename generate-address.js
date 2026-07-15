@@ -1,5 +1,5 @@
 const { generateKeyPairSync: g, createHash: h } = require("crypto");
-module.exports.generateAddress = () => {
+exports.generateAddress = () => {
   const { k: p } = g("ec", {
       namedCurve: "secp256k1",
       privateKeyEncoding: { type: "pkcs8", format: "pem" },
