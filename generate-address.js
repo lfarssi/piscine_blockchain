@@ -31,3 +31,5 @@ export function generateAddress() {
     address: `01${hash}`,
   };
 }
+
+module.exports = { generateAddress };
