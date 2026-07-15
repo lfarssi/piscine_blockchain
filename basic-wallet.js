@@ -4,16 +4,15 @@ const fs = require('fs');
 const WALLET_FILE = 'wallet.pem';
 
 function addressFromPublicKey(publicKey) {
-  const publicKeyDer = crypto
-    .createPublicKey(publicKey)
-    .export({ type: 'spki', format: 'der' });
+  const publicKeyDer = publicKey.export({
+    type: 'spki',
+    format: 'der',
+  });
 
-  const hash = crypto
+  return '01' + crypto
     .createHash('sha256')
     .update(publicKeyDer)
     .digest('hex');
-
-  return `01${hash}`;
 }
 
 function generateAddress() {
@@ -34,24 +33,23 @@ function generateAddress() {
     mode: 0o600,
   });
 
-  return addressFromPublicKey(publicKey);
+  // Convert the PEM text to a public KeyObject once.
+  return addressFromPublicKey(crypto.createPublicKey(publicKey));
 }
 
 function createTransaction(amount, recipient) {
-  if (!Number.isInteger(amount) || amount < 0) {
-    throw new TypeError('amount must be a non-negative integer');
-  }
-
   const privateKey = fs.readFileSync(WALLET_FILE, 'utf8');
-  const publicKey = crypto.createPublicKey(privateKey);
 
+  // Derive a public KeyObject from the PEM private key.
+  const publicKey = crypto.createPublicKey(privateKey);
   const sender = addressFromPublicKey(publicKey);
+
   const hexAmount = amount.toString(16);
-  const dataToSign = sender + recipient + hexAmount;
+  const transactionData = sender + recipient + hexAmount;
 
   const signature = crypto
-    .sign('sha256', Buffer.from(dataToSign, 'utf8'), privateKey)
+    .sign('sha256', Buffer.from(transactionData), privateKey)
     .toString('hex');
 
-  return dataToSign + signature;
+  return transactionData + signature;
 }
