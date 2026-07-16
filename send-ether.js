@@ -5,14 +5,14 @@ async function sendEther(amount, address) {
     ethers.JsonRpcProvider || ethers.providers.JsonRpcProvider;
 
   const provider = new Provider("http://localhost:8545");
-  const signer = await provider.getSigner();
+  const signer = await provider.getSigner(0);
 
   const parseEther =
     ethers.parseEther || ethers.utils.parseEther;
 
   const tx = await signer.sendTransaction({
     to: address,
-    value: parseEther(String(amount)),
+    value: parseEther(amount.toString()),
   });
 
   return tx.hash;
