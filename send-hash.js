@@ -1,21 +1,25 @@
 import { ethers } from "ethers";
+import crypto from "node:crypto";
 
-async function sendEther(amount, address) {
+async function sendHash(text) {
   const Provider =
     ethers.JsonRpcProvider || ethers.providers.JsonRpcProvider;
 
   const provider = new Provider("http://localhost:8545");
   const signer = await provider.getSigner(0);
 
-  const parseEther =
-    ethers.parseEther || ethers.utils.parseEther;
+  const hash = crypto
+    .createHash("sha256")
+    .update(text)
+    .digest("hex");
 
   const tx = await signer.sendTransaction({
-    to: address,
-    value: parseEther(amount.toString()),
+    to: await signer.getAddress(),
+    value: 0,
+    data: "0x" + hash,
   });
 
   return tx.hash;
 }
 
-export { sendEther as "module.exports" };   
+export { sendHash as "module.exports" };
