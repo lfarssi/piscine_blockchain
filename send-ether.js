@@ -1,11 +1,11 @@
-const { ethers } = require("ethers");
+import { ethers } from "ethers";
 
 async function sendEther(amount, address) {
   const Provider =
     ethers.JsonRpcProvider || ethers.providers.JsonRpcProvider;
 
   const provider = new Provider("http://localhost:8545");
-  const signer = provider.getSigner();
+  const signer = await provider.getSigner();
 
   const parseEther =
     ethers.parseEther || ethers.utils.parseEther;
@@ -18,4 +18,4 @@ async function sendEther(amount, address) {
   return tx.hash;
 }
 
-module.exports = sendEther;
+export { sendEther as "module.exports" };
