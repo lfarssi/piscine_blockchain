@@ -1,3 +1,6 @@
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 const { ethers } = require('ethers');
 
 async function getAccount() {
@@ -6,4 +9,4 @@ async function getAccount() {
   return accounts[0];
 }
 
-module.exports = { getAccount };
+module.exports = getAccount;
