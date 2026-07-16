@@ -6,4 +6,4 @@ async function getAccount() {
   return accounts[0];
 }
 
-module.exports = getAccount;
+module.exports = { getAccount };
