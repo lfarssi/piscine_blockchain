@@ -1,12 +1,18 @@
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-const { ethers } = require('ethers');
+const { ethers } = require("ethers");
 
 async function getAccount() {
-  const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
+  const Provider =
+    ethers.JsonRpcProvider || ethers.providers.JsonRpcProvider;
+
+  const provider = new Provider("http://localhost:8545");
+
   const accounts = await provider.listAccounts();
-  return accounts[0];
+
+  if (typeof accounts[0] === "string") {
+    return accounts[0];
+  }
+
+  return accounts[0].address;
 }
 
 module.exports = getAccount;
