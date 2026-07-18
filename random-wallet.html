@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>random wallet</title>
+  </head>
+  <body>
+    <div id="address"></div>
+    <div id="balance"></div>
+    <button id="refreshBalance">Refresh Balance</button>
+
+    <script
+      src="./ethers-5.7.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script type="module">
+      const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+      const wallet = ethers.Wallet.createRandom();
+
+      const addressEl = document.getElementById("address");
+      const balanceEl = document.getElementById("balance");
+      const refreshBtn = document.getElementById("refreshBalance");
+
+      addressEl.textContent = wallet.address;
+
+      async function refreshBalance() {
+        const balance = await provider.getBalance(wallet.address);
+        balanceEl.textContent = ethers.utils.formatEther(balance);
+      }
+
+      refreshBtn.addEventListener("click", refreshBalance);
+
+      await refreshBalance();
+    </script>
+  </body>
+</html>
