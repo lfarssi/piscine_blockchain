@@ -13,9 +13,12 @@
     ></script>
     <script type="module">
       async function main() {
+        const addressEl = document.getElementById("address");
+        const balanceEl = document.getElementById("balance");
+
         if (!window.ethereum) {
-          document.getElementById("address").textContent = "";
-          document.getElementById("balance").textContent = "0";
+          addressEl.textContent = "";
+          balanceEl.textContent = "0";
           return;
         }
 
@@ -23,13 +26,17 @@
 
         await provider.send("eth_requestAccounts", []);
 
-        const signer = provider.getSigner();
-        const address = await signer.getAddress();
-        const balance = await provider.getBalance(address);
+        const accounts = await provider.listAccounts();
+        const address = accounts[0] || "";
+        addressEl.textContent = address;
 
-        document.getElementById("address").textContent = address;
-        document.getElementById("balance").textContent =
-          ethers.utils.formatEther(balance);
+        if (!address) {
+          balanceEl.textContent = "0";
+          return;
+        }
+
+        const balance = await provider.getBalance(address);
+        balanceEl.textContent = ethers.utils.formatEther(balance);
       }
 
       main();
