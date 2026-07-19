@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Connect to MetaMask</title>
+  </head>
+  <body>
+    <div id="address"></div>
+    <div id="balance"></div>
+
+    <script
+      src="./ethers-5.7.umd.min.js"
+      type="application/javascript"
+    ></script>
+    <script type="module">
+      async function main() {
+        if (!window.ethereum) return;
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+
+        let accounts = await window.ethereum.request({ method: "eth_accounts" });
+
+        if (!accounts || accounts.length === 0) {
+          try {
+            accounts = await provider.send("eth_requestAccounts", []);
+          } catch {
+            return;
+          }
+        }
+
+        const address = accounts[0];
+        const balance = await provider.getBalance(address);
+
+        document.getElementById("address").textContent = address;
+        document.getElementById("balance").textContent =
+          ethers.utils.formatEther(balance);
+      }
+
+      main();
+    </script>
+  </body>
+</html>
