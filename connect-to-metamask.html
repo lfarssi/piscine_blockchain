@@ -16,24 +16,32 @@
         const addressEl = document.getElementById("address");
         const balanceEl = document.getElementById("balance");
 
-        if (!window.ethereum) {
-          addressEl.textContent = "";
-          balanceEl.textContent = "0";
-          return;
-        }
+        addressEl.textContent = "";
+        balanceEl.textContent = "0";
+
+        if (!window.ethereum) return;
 
         const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
 
-        await provider.send("eth_requestAccounts", []);
+        let accounts = [];
+        try {
+          accounts = await window.ethereum.request({ method: "eth_accounts" });
+        } catch {}
 
-        const accounts = await provider.listAccounts();
-        const address = accounts[0] || "";
+        if (!accounts || accounts.length === 0) {
+          try {
+            accounts = await provider.send("eth_requestAccounts", []);
+          } catch {}
+        }
+
+        const address =
+          (accounts && accounts[0]) ||
+          window.ethereum.selectedAddress ||
+          "";
+
         addressEl.textContent = address;
 
-        if (!address) {
-          balanceEl.textContent = "0";
-          return;
-        }
+        if (!address) return;
 
         const balance = await provider.getBalance(address);
         balanceEl.textContent = ethers.utils.formatEther(balance);
