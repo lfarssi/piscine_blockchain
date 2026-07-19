@@ -13,21 +13,18 @@
     ></script>
     <script type="module">
       async function main() {
-        if (!window.ethereum) return;
+        if (!window.ethereum) {
+          document.getElementById("address").textContent = "";
+          document.getElementById("balance").textContent = "0";
+          return;
+        }
 
         const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
 
-        let accounts = await window.ethereum.request({ method: "eth_accounts" });
+        await provider.send("eth_requestAccounts", []);
 
-        if (!accounts || accounts.length === 0) {
-          try {
-            accounts = await provider.send("eth_requestAccounts", []);
-          } catch {
-            return;
-          }
-        }
-
-        const address = accounts[0];
+        const signer = provider.getSigner();
+        const address = await signer.getAddress();
         const balance = await provider.getBalance(address);
 
         document.getElementById("address").textContent = address;
