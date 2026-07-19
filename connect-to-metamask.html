@@ -11,39 +11,21 @@
       src="./ethers-5.7.umd.min.js"
       type="application/javascript"
     ></script>
+
     <script type="module">
       async function main() {
         const addressEl = document.getElementById("address");
         const balanceEl = document.getElementById("balance");
 
-        addressEl.textContent = "";
-        balanceEl.textContent = "0";
+        const provider = new ethers.providers.JsonRpcProvider(
+          "http://localhost:8545"
+        );
 
-        if (!window.ethereum) return;
+        const wallet = ethers.Wallet.createRandom().connect(provider);
 
-        const provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+        addressEl.textContent = wallet.address;
 
-        let accounts = [];
-        try {
-          accounts = await window.ethereum.request({ method: "eth_accounts" });
-        } catch {}
-
-        if (!accounts || accounts.length === 0) {
-          try {
-            accounts = await provider.send("eth_requestAccounts", []);
-          } catch {}
-        }
-
-        const address =
-          (accounts && accounts[0]) ||
-          window.ethereum.selectedAddress ||
-          "";
-
-        addressEl.textContent = address;
-
-        if (!address) return;
-
-        const balance = await provider.getBalance(address);
+        const balance = await provider.getBalance(wallet.address);
         balanceEl.textContent = ethers.utils.formatEther(balance);
       }
 
