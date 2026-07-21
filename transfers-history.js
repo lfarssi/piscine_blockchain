@@ -4,7 +4,7 @@ const abi = [
   "event Transfer(address indexed sender, address indexed recipient, uint256 amount)"
 ];
 
-export async function transfersHistory(contractAddress, userAddress) {
+async function transfersHistory(contractAddress, userAddress) {
   const provider = new ethers.providers.JsonRpcProvider(
     "http://localhost:8545"
   );
@@ -26,4 +26,5 @@ export async function transfersHistory(contractAddress, userAddress) {
 
   return history;
 }
-exports.transfersHistory = transfersHistory;
+
+export { transfersHistory };
