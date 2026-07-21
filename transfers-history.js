@@ -1,16 +1,15 @@
-const { ethers } = require("ethers");
+import { ethers } from "ethers";
 
 const abi = [
   "event Transfer(address indexed sender, address indexed recipient, uint256 amount)"
 ];
 
-async function transfersHistory(contractAddress, userAddress) {
+export async function transfersHistory(contractAddress, userAddress) {
   const provider = new ethers.providers.JsonRpcProvider(
     "http://localhost:8545"
   );
 
   const contract = new ethers.Contract(contractAddress, abi, provider);
-
   const events = await contract.queryFilter(contract.filters.Transfer());
 
   const history = [];
@@ -27,5 +26,4 @@ async function transfersHistory(contractAddress, userAddress) {
 
   return history;
 }
-
 exports.transfersHistory = transfersHistory;
